@@ -1,4 +1,5 @@
- /* Qualcomm Crypto Engine driver.
+/* Qualcomm Crypto Engine driver.
+ *
  * Copyright (c) 2012-2015, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
