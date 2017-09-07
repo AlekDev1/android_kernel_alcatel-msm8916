@@ -1144,8 +1144,11 @@ static void mdss_dsi_mode_setup(struct mdss_panel_data *pdata)
 	height = pdata->panel_info.yres;
 
 	if (pdata->panel_info.type == MIPI_VIDEO_PANEL) {
-		dummy_xres = pdata->panel_info.lcdc.xres_pad;
-		dummy_yres = pdata->panel_info.lcdc.yres_pad;
+		dummy_xres = mult_frac((pdata->panel_info.lcdc.border_left +
+				pdata->panel_info.lcdc.border_right),
+				dst_bpp, pdata->panel_info.bpp);
+		dummy_yres = pdata->panel_info.lcdc.border_top +
+				pdata->panel_info.lcdc.border_bottom;
 	}
 
 	vsync_period = vspw + vbp + height + dummy_yres + vfp;
@@ -2387,7 +2390,7 @@ static int dsi_event_thread(void *data)
 	spin_lock_init(&ev->event_lock);
 
 	while (1) {
-		wait_event_interruptible(ev->event_q, (ev->event_pndx != ev->event_gndx));
+		wait_event(ev->event_q, (ev->event_pndx != ev->event_gndx));
 		spin_lock_irqsave(&ev->event_lock, flag);
 		evq = &ev->todo_list[ev->event_gndx++];
 		todo = evq->todo;
